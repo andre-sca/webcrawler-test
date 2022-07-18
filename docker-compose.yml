@@ -15,5 +15,3 @@ services:
       - "3000:3000"
     depends_on:
       - web
-    environment:
-      - REACT_APP_APP_SERVER=http://localhost:5000
