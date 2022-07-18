@@ -1,0 +1,36 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: ibm-links
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: ibm-links-deployment
+        version: v1
+    spec:
+      containers:
+        - name: ibm-links
+          image: ascattolin/ibm-links
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5000
+          env:
+            - name: HOST_IP
+              value: <INGRESS_SUBDOMAIN>
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ibm-links-service
+spec:
+  ports:
+    - port: 5000
+      targetPort: 5000
+      nodePort: 32000
+      name: http
+  type: NodePort
+  selector:
+    name: ibm-links-deployment

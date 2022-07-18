@@ -1,24 +1,37 @@
 from bs4 import BeautifulSoup
 import urllib.request
 import re
-from flask import jsonify
+from services import utils
 
-def getPageLinks(url, linkList):
-    try:
-        page = urllib.request.urlopen(url)
+def getPageLinks(url, linkList, index):
 
-        BSoup = BeautifulSoup(page, "html.parser", from_encoding="iso-8859-1")
+    if len(linkList) < 100:
 
-        for x in (BSoup.findAll('a', attrs={'href': re.compile("^http://")}) or BSoup.findAll('a', attrs={'href': re.compile("^https://")})):
-            nextLink = x.get('href')
+        try:
+            page = urllib.request.urlopen(url)
 
-            if nextLink not in linkList:
-                linkList.append(nextLink)
+            BSoup = BeautifulSoup(page, "html.parser", from_encoding = "iso-8859-1")
+
+            auxList = []
+
+            for link in (BSoup.findAll('a', attrs={'href': re.compile("^http://")}) or BSoup.findAll('a', attrs={'href': re.compile("^https://")})):
+                nextLink = link.get('href')
+
+                if nextLink not in linkList:
+                    linkList.append(nextLink)
+                    auxList.append(nextLink)
+            utils.addLinks(auxList)
+            if index is None:
+                index = 0
             else:
-                print("Link already listed")
-        return jsonify(result=linkList)
-    except:
-        print("error")
+                index = index + 1
 
+            getPageLinks(linkList[index], linkList, index)
 
+        except Exception as e:
+            print(e)
+    else:
+        return linkList
 
+    return linkList
+    
