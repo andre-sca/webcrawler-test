@@ -1,4 +1,4 @@
-# ibm-links-test
+# webcrawler-test
 IBM Technical Test
 
 Technical Test: As a Software Analyst, I want to collect web links (URL's) from a given initial web link (URL)
